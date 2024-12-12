@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [advice, setAdvice] = useState("");
+  const [count, setCount] = useState(0);
+
+  async function GetApi() {
+    const res = await fetch("https://api.adviceslip.com/advice");
+    const data = await res.json();
+    setAdvice(data.slip.advice);
+    setCount((counter) => counter + 1);
+  }
+
+  useEffect(() => {
+    GetApi;
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="h-screen w-full felx flex-col justify-items-center py-10 ">
+      <div className="h-1/2 w-2/3 felx flex-col justify-items-center bg-rose-100/50 rounded-3xl px-5 py-5 border-2 shadow-slate-300 shadow-lg">
+        <h1 className="text-wrap font-semibold text-xl w-full h-2/3">
+          {advice}
+        </h1>
+        <div className="felx flex-col justify-items-center space-y-5">
+          <button
+            onClick={GetApi}
+            className="bg-slate-200 rounded-full border-1 border-slate-200 px-3 transition-all duration-300 hover:bg-pink-300"
+          >
+            Get advice
+          </button>
+          <Message count={count} />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+function Message(props:any) {
+  return (
+    <div>
+      <span>
+        You have read <strong>{props.count}</strong> pieces of device
+      </span>
+    </div>
+  );
+}
+
+export default App;
